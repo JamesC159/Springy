@@ -16,3 +16,4 @@ public class CameraController : MonoBehaviour {
         transform.position = player.transform.position + offset;
     }
 }
+//References: https://unity3d.com/learn/tutorials/projects/roll-ball-tutorial/moving-camera?playlist=17141
