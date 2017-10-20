@@ -28,7 +28,17 @@ public class SpringController : MonoBehaviour {
     void OnCollisionEnter2D (Collision2D c) {
         Rigidbody2D obj = c.collider.attachedRigidbody;
         if (obj.Equals (player.GetComponent<Rigidbody2D> ())) {
-            // Use this to make ball bounce
+            // Use this to make ball bounce	
         }
+	//Rajal -Researched on how to make the ball bounce when it comes in contact with a spring
+		/*
+		void OnCollisionEnter2D(Collision2D c){
+		Rigidbody2D rBody = collisionInfo.collider.GetComponent<Rigidbody2D>();
+		Vector2 vel = rBody.velocity;
+       		float mag = vel.magnitude;
+        	rBody.AddForce(Vector2.Reflect(vel, collisionInfo.contacts[0].normal) * mag, ForceMode2D.Impulse);
+		}
+		*/
+	    //Make sure to uncheck the BoxCollider2D 
     }
 }
