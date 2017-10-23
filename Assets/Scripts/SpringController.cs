@@ -42,3 +42,5 @@ public class SpringController : MonoBehaviour {
 	    //Make sure to uncheck the BoxCollider2D 
     }
 }
+
+//https://www.rastating.com/adding-springs-to-2d-platformers-in-unity/
