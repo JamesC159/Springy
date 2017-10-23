@@ -44,5 +44,4 @@ public class SpringController : MonoBehaviour {
 }
 
 //https://www.rastating.com/adding-springs-to-2d-platformers-in-unity/
-//https://github.com/cjddmut/Unity-2D-Platformer-Controller/blob/develop/Assets/PC2D/Scripts/MovingPlatformMotor2D.cs
 //https://unity3d.com/learn/tutorials/topics/scripting/update-and-fixedupdate
