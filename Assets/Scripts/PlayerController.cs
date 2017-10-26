@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour {
     void Update () {
 		float move_Horizontal = Input.GetAxis("Horizontal"); 
 		float move_Vertical = Input.GetAxis("Vertical");
+	    //Could this be Vector2 instead of Vector3?
 	    	Vector3 movement = new Vector3(move_Horizontal, 0.0f, move_Vertical);
 	    	rb2d.AddForce(movement * speed);
     }
