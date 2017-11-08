@@ -37,14 +37,6 @@ public class PlayerController : MonoBehaviour {
         collisionCounter++;
     }
 
-    public Vector2 GetVel() {
-        return vel;
-    }
-
-    public int GetCollisionCounter() {
-        return collisionCounter;
-    }
-
     public void MakeDynamic() {
         if (rb2d != null) {
             if (rb2d.isKinematic) {

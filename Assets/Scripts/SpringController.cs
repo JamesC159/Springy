@@ -53,11 +53,11 @@ public class SpringController : MonoBehaviour {
 
     private void OnMouseDrag() {
         dragging = true;
-        print("There");
-        // Calculate the spring compress from the magnitude of the vector between initial and current mouse positions
+        // Calculate the spring compression from the magnitude of the vector between initial and current mouse positions
         Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0);
         Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint);
         Vector3 heading = cursorPosition - initialPos;
+        // Note: dragging mass is the mass of the user's click
         x = CalcX(draggingMass, heading.magnitude);
     }
 
@@ -65,7 +65,7 @@ public class SpringController : MonoBehaviour {
         dragging = false;
         if (ballRb != null) {
             PlayerController p = ballRb.gameObject.GetComponent<PlayerController>();
-            // If the ball has no been launched when the user lets go of the mouse, then launch the ball kinematically and allow dynamics to take over.
+            // If the ball has not been launched when the user lets go of the mouse, then launch the ball kinematically and allow dynamics to take over.
             if(!p.hasLaunched) {
                 ballRb.velocity = CalcVel(x, draggingMass);
                 p.MakeDynamic();
