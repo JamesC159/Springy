@@ -4,16 +4,24 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+    [HideInInspector]
     public int collisionCounter;
+    [HideInInspector]
     public bool hasLaunched;
+    [HideInInspector]
     public Vector2 vel;
+
     private Rigidbody2D rb2d;
+
+    private void Awake() {
+        rb2d = GetComponent<Rigidbody2D>();
+    }
 
     // Use this for initialization
     private void Start () {
-		rb2d = GetComponent<Rigidbody2D>();
-        hasLaunched = false;
         collisionCounter = 0;
+        hasLaunched = false;
+        vel = rb2d.velocity;
     }
 
     // Update is called once per frame

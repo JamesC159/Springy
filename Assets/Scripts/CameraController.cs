@@ -4,16 +4,11 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
     public GameObject player;
-    private Vector3 offset;
+    public float smoothing;
 
-    void Start ()
-    {
-        offset = transform.position - player.transform.position;
-    }
-    
-    void LateUpdate ()
-    {
-        transform.position = player.transform.position + offset;
+    private void FixedUpdate() {
+        Vector3 newPos = new Vector3(player.transform.position.x, player.transform.position.y, this.transform.position.z);
+        this.transform.position = Vector3.Lerp(this.transform.position, newPos, Time.fixedDeltaTime * smoothing);
     }
 }
 //References: https://unity3d.com/learn/tutorials/projects/roll-ball-tutorial/moving-camera?playlist=17141
