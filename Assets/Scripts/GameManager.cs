@@ -28,7 +28,12 @@ public class GameManager : MonoBehaviour {
 		for(int i = 0; i < numColumns; i++){
 			GameObject obj = Instantiate (column, new Vector3 (x, y, 0), Quaternion.identity);
 			colliders = Physics.OverlapSphere (obj.transform.position, radius);
-			obj.SetActive (true);
+			if (colliders.Length > 0) {
+				i--;
+				Destroy (obj);
+			} else {
+				obj.SetActive (true);
+			}
 			x = Random.Range (3, 17);
 			y = Random.Range (-5, 2);
 		}
