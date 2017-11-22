@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour {
 
 	[HideInInspector]
 	public static bool didWin = false;
+	[HideInInspector]
+	public static bool restart = false;
+	[HideInInspector]
+	public static bool quit = false;
 
 	private int numInstantiated = 0;
 	private GameObject[] cols;
@@ -33,7 +37,12 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (didWin) {
-			// Restart the level with new random columns since the player has beat the level
+			// Display the player's score and ask to rety or quit
+			if (restart) {
+				// If restart, reload the scene
+			} else if (quit) {
+				// If quit, take user back to main menu
+			}
 		}
 		if (PlayerController.isDead) {
 			// Player died, restart level with new random columns.
