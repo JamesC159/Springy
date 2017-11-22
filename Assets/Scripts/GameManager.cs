@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour {
 		if (PlayerController.isDead) {
 			// Player died, restart level with new random columns.
 			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+			PlayerController.isDead = false;
 		}
 	}
 

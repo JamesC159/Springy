@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour {
             rb2d.freezeRotation = true;
             rb2d.velocity = Vector2.zero;
         }
+		if (isDead) {
+			collisionCounter = 0;
+			hasLaunched = false;
+		}
     }
 
     private void FixedUpdate() {
