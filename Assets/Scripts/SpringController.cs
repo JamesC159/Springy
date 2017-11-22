@@ -61,7 +61,7 @@ public class SpringController : MonoBehaviour {
             // If the ball has been launched, then we are adding force to the dynamics of the ball rather than setting it's velocity to a precalculated value
             // For some reason on launch, the ball collides with the launch spring twice, so we need to take care of how many times it has collided with the launch spring
             // before deciding that dynamic physics is in play.
-            if (p.collisionCounter > 2 && p.hasLaunched) {
+            if (p.collisionCounter > 1 && p.hasLaunched) {
                 x = CalcX(ballRb.mass, p.vel.magnitude);
                 F = transform.up.normalized * k * x * x;
                 ballRb.AddForce(F * forceDampener, ForceMode2D.Impulse);
