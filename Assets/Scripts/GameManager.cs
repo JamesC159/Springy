@@ -1,12 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
+	
+	public GameObject ball;
 	public Collider[] colliders;
 	public GameObject column;
 	public int numColumns;
 	public float radius = 0f;
+
+	[HideInInspector]
+	public static bool didWin = false;
 
 	private int numInstantiated = 0;
 	private GameObject[] cols;
@@ -26,7 +32,13 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (didWin) {
+			// Restart the level with new random columns since the player has beat the level
+		}
+		if (PlayerController.isDead) {
+			// Player died, restart level with new random columns.
+			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+		}
 	}
 
 	void LateUpdate() {

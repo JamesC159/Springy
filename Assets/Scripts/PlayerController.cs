@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+	[HideInInspector]
+	public static bool isDead = false;
     [HideInInspector]
     public int collisionCounter;
     [HideInInspector]
@@ -11,7 +13,7 @@ public class PlayerController : MonoBehaviour {
     [HideInInspector]
     public Vector2 vel;
 
-    private Rigidbody2D rb2d;
+	private Rigidbody2D rb2d;
 
     private void Awake() {
         rb2d = GetComponent<Rigidbody2D>();
@@ -21,6 +23,7 @@ public class PlayerController : MonoBehaviour {
     private void Start () {
         collisionCounter = 0;
         hasLaunched = false;
+		isDead = false;
         vel = rb2d.velocity;
     }
 
@@ -43,6 +46,9 @@ public class PlayerController : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision) {
         collisionCounter++;
+		if (collision.gameObject.tag == "Ground") {
+			isDead = true;
+		}
     }
 
     public void MakeDynamic() {
