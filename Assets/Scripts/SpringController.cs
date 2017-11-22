@@ -13,6 +13,7 @@ public class SpringController : MonoBehaviour {
     private PlayerController p;
     private Rigidbody2D ballRb;
     private Vector3 initialPos;
+	private Vector3 initialScale;
     private Vector3 launchHeading;
 	private Vector3 cursorPosition;
     private Vector2 F;
@@ -24,9 +25,10 @@ public class SpringController : MonoBehaviour {
     }
 
     // Use this for initialization
-    private void Start () {
-        initialPos = Vector3.zero;
-        launchHeading = Vector3.zero;
+	private void Start () {
+		initialPos = Vector3.zero;
+		initialScale = transform.localScale;
+		cursorPosition = Vector3.zero;
         F = Vector2.zero;
         x = 0f;
         launchAngle = 0f;
@@ -38,16 +40,23 @@ public class SpringController : MonoBehaviour {
        
     }
 
-    private void FixedUpdate() {
-        // Rotate the launch spring as long as we are dragging the mouse by launchAngle degrees.
-        if(dragging) {
-            transform.Rotate(0, 0, launchAngle);
-			// If we have a handle of the ball, rotate it's position about the launch spring while we are dragging
-			if (ballRb != null) {
-				ballRb.transform.RotateAround (transform.position, transform.forward, launchAngle);
+	private void FixedUpdate() {
+		// Rotate the launch spring as long as we are dragging the mouse by launchAngle degrees.
+		if (dragging) {
+			transform.Rotate (0, 0, launchAngle);
+
+			//compress the spring based on the user's mouse position
+			if (cursorPosition.y / 0.25f > 0.13f && cursorPosition.y / 0.25f < 0.5f) { 
+				//to avoid changing the ball's shape we have to unparent the spring to ball, then reparent it
+
+				transform.localScale = Vector3.MoveTowards (transform.localScale, //new Vector3 (1, 1, initialScale.z),1);
+					new Vector3 (initialScale.x, cursorPosition.y / 0.25f, initialScale.z), 0.25f);
 			}
-        }
-    }
+		}
+		if (PlayerController.hasLaunched) {
+			transform.localScale = Vector3.MoveTowards (transform.localScale, initialScale, 1);
+		}
+	}
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Player") {
@@ -80,8 +89,7 @@ public class SpringController : MonoBehaviour {
         x = CalcX(draggingMass, launchHeading.magnitude);
     }
 
-    private void OnMouseUp() {
-        initialPos = Vector3.zero;
+    private void OnMouseUp() {        
         dragging = false;
         if (ballRb != null) {
             PlayerController p = ballRb.gameObject.GetComponent<PlayerController>();
