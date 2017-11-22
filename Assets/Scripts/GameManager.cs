@@ -5,8 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 	
-	public GameObject ball;
-	public Collider[] colliders;
 	public GameObject column;
 	public int numColumns;
 	public float radius = 0f;
@@ -33,10 +31,17 @@ public class GameManager : MonoBehaviour {
 		float y = Random.Range (minY, maxY);
 		while(numInstantiated < numColumns) {
 			GameObject obj = Instantiate (column, new Vector3 (x, y, 0), Quaternion.identity);
+//			colliders = Physics2D.OverlapCircle (obj.transform.position, radius);
+//			if (colliders != null) {
+//				Destroy (obj);
+//			} else {
+//				numInstantiated++;
+//				obj.SetActive (true);
+//			}
+			numInstantiated++;
 			obj.SetActive (true);
 			x = Random.Range (minX, maxX);
 			y = Random.Range (minY, maxY);
-			numInstantiated++;
 		}
 	}
 	
@@ -53,9 +58,11 @@ public class GameManager : MonoBehaviour {
 		if (PlayerController.isDead) {
 			// TODO: show player score and ask to quit or continue
 			// Player died, restart level with new random columns.
-			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 			numInstantiated = 0;
 			PlayerController.isDead = false;
+			PlayerController.collisionCounter = 0;
+			PlayerController.hasLaunched = false;
+			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 		}
 	}
 

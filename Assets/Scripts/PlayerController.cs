@@ -7,9 +7,9 @@ public class PlayerController : MonoBehaviour {
 	[HideInInspector]
 	public static bool isDead = false;
     [HideInInspector]
-    public int collisionCounter;
+    public static int collisionCounter;
     [HideInInspector]
-    public bool hasLaunched;
+    public static bool hasLaunched;
     [HideInInspector]
     public Vector2 vel;
 
@@ -49,8 +49,6 @@ public class PlayerController : MonoBehaviour {
 		// If the player collides with the ground, kill the player
 		if (collision.gameObject.tag == "Ground") {
 			isDead = true;
-			collisionCounter = 0;
-			hasLaunched = false;
 		}
     }
 

@@ -312,7 +312,7 @@ Prefab:
     - target: {fileID: 114880742710414284, guid: 69ce33548bb6a764188afa9f32b03ceb,
         type: 2}
       propertyPath: minX
-      value: 2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 114880742710414284, guid: 69ce33548bb6a764188afa9f32b03ceb,
         type: 2}
@@ -327,7 +327,7 @@ Prefab:
     - target: {fileID: 114880742710414284, guid: 69ce33548bb6a764188afa9f32b03ceb,
         type: 2}
       propertyPath: maxY
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 69ce33548bb6a764188afa9f32b03ceb, type: 2}
