@@ -38,11 +38,6 @@ public class PlayerController : MonoBehaviour {
             rb2d.freezeRotation = true;
             rb2d.velocity = Vector2.zero;
         }
-		// If the player died, reset collision counter and launch flag
-		if (isDead) {
-			collisionCounter = 0;
-			hasLaunched = false;
-		}
     }
 
     private void FixedUpdate() {
@@ -54,6 +49,8 @@ public class PlayerController : MonoBehaviour {
 		// If the player collides with the ground, kill the player
 		if (collision.gameObject.tag == "Ground") {
 			isDead = true;
+			collisionCounter = 0;
+			hasLaunched = false;
 		}
     }
 

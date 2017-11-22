@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour {
 			// TODO: show player score and ask to quit or continue
 			// Player died, restart level with new random columns.
 			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+			numInstantiated = 0;
 			PlayerController.isDead = false;
 		}
 	}
