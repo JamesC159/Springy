@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour {
             rb2d.freezeRotation = true;
             rb2d.velocity = Vector2.zero;
         }
+		// If the player died, reset collision counter and launch flag
 		if (isDead) {
 			collisionCounter = 0;
 			hasLaunched = false;
@@ -50,6 +51,7 @@ public class PlayerController : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision) {
         collisionCounter++;
+		// If the player collides with the ground, kill the player
 		if (collision.gameObject.tag == "Ground") {
 			isDead = true;
 		}

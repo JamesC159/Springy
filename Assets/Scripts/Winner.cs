@@ -18,6 +18,7 @@ public class Winner : MonoBehaviour {
 		if (collision.collider.gameObject.tag == "Player") {
 			// The player has beat the level
 			GameManager.didWin = true;
+			// TODO: show player's score and ask to continue or quit
 		}
 	}
 }

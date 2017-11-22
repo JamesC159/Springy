@@ -51,6 +51,7 @@ public class SpringController : MonoBehaviour {
         // Rotate the launch spring as long as we are dragging the mouse by launchAngle degrees.
         if(dragging) {
             transform.Rotate(0, 0, launchAngle);
+			// If we have a handle of the ball, rotate it's position about the launch spring while we are dragging
 			if (ballRb != null) {
 				ballRb.transform.RotateAround (transform.position, transform.forward, launchAngle);
 			}

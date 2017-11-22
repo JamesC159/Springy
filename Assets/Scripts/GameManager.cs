@@ -10,6 +10,10 @@ public class GameManager : MonoBehaviour {
 	public GameObject column;
 	public int numColumns;
 	public float radius = 0f;
+	public float minX;
+	public float minY;
+	public float maxX;
+	public float maxY;
 
 	[HideInInspector]
 	public static bool didWin = false;
@@ -17,25 +21,22 @@ public class GameManager : MonoBehaviour {
 	public static bool restart = false;
 	[HideInInspector]
 	public static bool quit = false;
+	[HideInInspector]
+	public static int numInstantiated = 0;
 
-	private int numInstantiated = 0;
+
 	private GameObject[] cols;
 
 	// Use this for initialization
 	void Start () {
-		float x = Random.Range (3, 17);
-		float y = Random.Range (-5, 2);
-		for(int i = 0; i < numColumns; i++){
+		float x = Random.Range (minX, maxX);
+		float y = Random.Range (minY, maxY);
+		while(numInstantiated < numColumns) {
 			GameObject obj = Instantiate (column, new Vector3 (x, y, 0), Quaternion.identity);
-			colliders = Physics.OverlapSphere (obj.transform.position, radius);
-			if (colliders.Length > 0) {
-				i--;
-				Destroy (obj);
-			} else {
-				obj.SetActive (true);
-			}
-			x = Random.Range (3, 17);
-			y = Random.Range (-5, 2);
+			obj.SetActive (true);
+			x = Random.Range (minX, maxX);
+			y = Random.Range (minY, maxY);
+			numInstantiated++;
 		}
 	}
 	
@@ -50,6 +51,7 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		if (PlayerController.isDead) {
+			// TODO: show player score and ask to quit or continue
 			// Player died, restart level with new random columns.
 			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 			PlayerController.isDead = false;
