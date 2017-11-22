@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SpringController : MonoBehaviour {
 
+    public GameObject springTop;
     public float k;
     public float draggingMass;
     public float forceDampener;
@@ -12,6 +13,7 @@ public class SpringController : MonoBehaviour {
     private PlayerController p;
     private Rigidbody2D rb2d;
     private Rigidbody2D ballRb;
+    private SpriteRenderer renderer;
     private Vector3 initialPos;
     private Vector3 cursorPosition;
     private Vector3 launchHeading;
@@ -24,6 +26,7 @@ public class SpringController : MonoBehaviour {
 
     private void Awake () {
         rb2d = GetComponent<Rigidbody2D> ();
+        renderer = GetComponent<SpriteRenderer>();
     }
 
     // Use this for initialization
@@ -54,7 +57,7 @@ public class SpringController : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Player") {
             ballRb = collision.collider.gameObject.GetComponent<Rigidbody2D>();
-            p = ballRb.gameObject.GetComponent<PlayerController>();
+            p = ballRb.gameObject.GetComponent<PlayerController>(); 
             // If the ball has been launched, then we are adding force to the dynamics of the ball rather than setting it's velocity to a precalculated value
             // For some reason on launch, the ball collides with the launch spring twice, so we need to take care of how many times it has collided with the launch spring
             // before deciding that dynamic physics is in play.
