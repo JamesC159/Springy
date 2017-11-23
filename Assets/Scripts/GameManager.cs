@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
-	
+
+	[HideInInspector]
+	public static GameManager instance;
 	public GameObject column;
 	public int numColumns;
 	public float radius = 0f;
@@ -14,16 +16,29 @@ public class GameManager : MonoBehaviour {
 	public float maxY;
 
 	[HideInInspector]
-	public static bool didWin = false;
+	public bool didWin = false;
 	[HideInInspector]
-	public static bool restart = false;
+	public bool restart = false;
 	[HideInInspector]
-	public static bool quit = false;
+	public bool quit = false;
 	[HideInInspector]
-	public static int numInstantiated = 0;
-
+	public int numInstantiated = 0;
 
 	private GameObject[] cols;
+
+	void Awake() {
+		//check if instance already exists
+		if (instance == null) {
+			//if not, set instance to this
+			instance = this;
+		}
+		else if{
+			Destroy (this);
+			DontDestroyOnLoad(this);
+			boardScript = GetComponent<BoardManager>();
+			Start();
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -55,13 +70,13 @@ public class GameManager : MonoBehaviour {
 				// If quit, take user back to main menu
 			}
 		}
-		if (PlayerController.isDead) {
+		if (PlayerController.instance.isDead) {
 			// TODO: show player score and ask to quit or continue
-			// Player died, restart level with new random columns.
+			// Player died, restart level with new random columns and reset PlayerController.
 			numInstantiated = 0;
-			PlayerController.isDead = false;
-			PlayerController.collisionCounter = 0;
-			PlayerController.hasLaunched = false;
+			PlayerController.instance.isDead = false;
+			PlayerController.instance.collisionCounter = 0;
+			PlayerController.instance.hasLaunched = false;
 			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 		}
 	}

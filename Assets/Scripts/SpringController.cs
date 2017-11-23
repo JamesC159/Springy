@@ -44,18 +44,17 @@ public class SpringController : MonoBehaviour {
 		// Rotate the launch spring as long as we are dragging the mouse by launchAngle degrees.
 		if (dragging) {
 			transform.Rotate (0, 0, launchAngle);
+            // The ball is not a child of the spring, update its position relative to the launch spring
             if(ballRb != null) {
                 ballRb.transform.RotateAround(transform.position, transform.forward, launchAngle);
             }
 			//compress the spring based on the user's mouse position
 			if (cursorPosition.y / 0.25f > 0.13f && cursorPosition.y / 0.25f < 0.5f) { 
-				//to avoid changing the ball's shape we have to unparent the spring to ball, then reparent it
-
 				transform.localScale = Vector3.MoveTowards (transform.localScale, //new Vector3 (1, 1, initialScale.z),1);
 					new Vector3 (initialScale.x, cursorPosition.y / 0.25f, initialScale.z), 0.25f);
 			}
 		}
-		if (PlayerController.hasLaunched) {
+		if (PlayerController.instance.hasLaunched) {
 			transform.localScale = Vector3.MoveTowards (transform.localScale, initialScale, 1);
 		}
 	}
@@ -63,11 +62,10 @@ public class SpringController : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Player") {
             ballRb = collision.collider.gameObject.GetComponent<Rigidbody2D>();
-            p = ballRb.gameObject.GetComponent<PlayerController>(); 
             // If the ball has been launched, then we are adding force to the dynamics of the ball rather than setting it's velocity to a precalculated value
             // For some reason on launch, the ball collides with the launch spring twice, so we need to take care of how many times it has collided with the launch spring
             // before deciding that dynamic physics is in play.
-			if (PlayerController.collisionCounter > 1 && PlayerController.hasLaunched) {
+			if (PlayerController.instance.collisionCounter > 1 && PlayerController.instance.hasLaunched) {
                 x = CalcX(ballRb.mass, p.vel.magnitude);
                 F = transform.up.normalized * k * x * x;
                 ballRb.AddForce(F * forceDampener, ForceMode2D.Impulse);
@@ -94,12 +92,11 @@ public class SpringController : MonoBehaviour {
     private void OnMouseUp() {        
         dragging = false;
         if (ballRb != null) {
-            PlayerController p = ballRb.gameObject.GetComponent<PlayerController>();
             // If the ball has not been launched when the user lets go of the mouse, then launch the ball kinematically and allow dynamics to take over.
-			if(!PlayerController.hasLaunched) {
+			if(!PlayerController.instance.hasLaunched) {
                 ballRb.velocity = CalcVel(x, draggingMass);
                 p.MakeDynamic();
-				PlayerController.hasLaunched = true;
+				PlayerController.instance.hasLaunched = true;
             }
         }
     }
