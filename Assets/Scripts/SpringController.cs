@@ -44,7 +44,9 @@ public class SpringController : MonoBehaviour {
 		// Rotate the launch spring as long as we are dragging the mouse by launchAngle degrees.
 		if (dragging) {
 			transform.Rotate (0, 0, launchAngle);
-
+			if (ballRb != null) {
+				ballRb.transform.RotateAround (transform.position, transform.forward, launchAngle);
+			}
 			//compress the spring based on the user's mouse position
 			if (cursorPosition.y / 0.25f > 0.13f && cursorPosition.y / 0.25f < 0.5f) { 
 				//to avoid changing the ball's shape we have to unparent the spring to ball, then reparent it
