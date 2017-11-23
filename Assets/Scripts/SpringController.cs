@@ -10,7 +10,6 @@ public class SpringController : MonoBehaviour {
     public float forceDampener;
     public float forceMultiplier;
 
-    private PlayerController p;
     private Rigidbody2D ballRb;
     private Vector3 initialPos;
 	private Vector3 initialScale;
@@ -36,8 +35,7 @@ public class SpringController : MonoBehaviour {
     }
 	
     // Update is called once per frame
-    private void Update () {
-       
+    private void Update () {  
     }
 
 	private void FixedUpdate() {
@@ -66,7 +64,7 @@ public class SpringController : MonoBehaviour {
             // For some reason on launch, the ball collides with the launch spring twice, so we need to take care of how many times it has collided with the launch spring
             // before deciding that dynamic physics is in play.
 			if (PlayerController.instance.collisionCounter > 1 && PlayerController.instance.hasLaunched) {
-                x = CalcX(ballRb.mass, p.vel.magnitude);
+                x = CalcX(ballRb.mass, PlayerController.instance.vel.magnitude);
                 F = transform.up.normalized * k * x * x;
                 ballRb.AddForce(F * forceDampener, ForceMode2D.Impulse);
             } 
@@ -95,8 +93,8 @@ public class SpringController : MonoBehaviour {
             // If the ball has not been launched when the user lets go of the mouse, then launch the ball kinematically and allow dynamics to take over.
 			if(!PlayerController.instance.hasLaunched) {
                 ballRb.velocity = CalcVel(x, draggingMass);
-                p.MakeDynamic();
-				PlayerController.instance.hasLaunched = true;
+                PlayerController.instance.MakeDynamic();
+				PlayerController.instance.hasLaunched = true;			
             }
         }
     }
