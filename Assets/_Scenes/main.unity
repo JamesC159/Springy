@@ -322,7 +322,7 @@ Prefab:
     - target: {fileID: 114880742710414284, guid: 69ce33548bb6a764188afa9f32b03ceb,
         type: 2}
       propertyPath: maxX
-      value: 20
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 114880742710414284, guid: 69ce33548bb6a764188afa9f32b03ceb,
         type: 2}
@@ -420,7 +420,7 @@ Prefab:
     - target: {fileID: 61152036809561952, guid: 66515c1110cbcd74d849ff1a56715702,
         type: 2}
       propertyPath: m_Size.x
-      value: 469.5
+      value: 3858.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 66515c1110cbcd74d849ff1a56715702, type: 2}
@@ -455,8 +455,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff0ba6db0aeb7470bbb1b04f3b01c1d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionCounter: 0
-  hasLaunched: 0
   vel: {x: 0, y: 0}
 --- !u!58 &1078696304
 CircleCollider2D:

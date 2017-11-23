@@ -3,20 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
-
+	
 	[HideInInspector]
-	public static bool isDead = false;
+	public static PlayerController instance;
+	[HideInInspector]
+	public bool isDead = false;
     [HideInInspector]
-    public static int collisionCounter;
+    public int collisionCounter;
     [HideInInspector]
-    public static bool hasLaunched;
+    public bool hasLaunched;
     [HideInInspector]
     public Vector2 vel;
 
 	private Rigidbody2D rb2d;
 
     private void Awake() {
-        rb2d = GetComponent<Rigidbody2D>();
+		if (instance == null) {
+			instance = this;
+			rb2d = GetComponent<Rigidbody2D>();
+		} else {
+			Destroy (this);
+		}
     }
 
     // Use this for initialization

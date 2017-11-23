@@ -64,13 +64,13 @@ public class GameManager : MonoBehaviour {
 				// If quit, take user back to main menu
 			}
 		}
-		if (PlayerController.isDead) {
+		if (PlayerController.instance.isDead) {
 			// TODO: show player score and ask to quit or continue
 			// Player died, restart level with new random columns and reset PlayerController.
 			numInstantiated = 0;
-			PlayerController.isDead = false;
-			PlayerController.collisionCounter = 0;
-			PlayerController.hasLaunched = false;
+			PlayerController.instance.isDead = false;
+			PlayerController.instance.collisionCounter = 0;
+			PlayerController.instance.hasLaunched = false;
 			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 		}
 	}
