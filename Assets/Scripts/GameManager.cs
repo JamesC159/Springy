@@ -27,10 +27,16 @@ public class GameManager : MonoBehaviour {
 	private GameObject[] cols;
 
 	void Awake() {
+		//check if instance already exists
 		if (instance == null) {
+			//if not, set instance to this
 			instance = this;
-		} else {
+		}
+		else if{
 			Destroy (this);
+			DontDestroyOnLoad(this);
+			boardScript = GetComponent<BoardManager>();
+			Start();
 		}
 	}
 
