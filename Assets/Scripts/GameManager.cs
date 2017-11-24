@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
 
 	public GameObject column;
 	public GameObject ball;
+	public GameObject uiCanvas;
 	public int numColumns;
 	public float radius = 0f;
 	public float minX;
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour {
 	public int numInstantiated = 0;
 
 	private GameObject[] cols;
+	private Canvas canvas;
 
 	void Awake() {
 	}
@@ -58,8 +60,15 @@ public class GameManager : MonoBehaviour {
 				// If quit, take user back to main menu
 			}
 		}
+		if (UIManagerScript.restart) {
+			canvas.enabled = !canvas.enabled;
+			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+			UIManagerScript.restart = false;
+		} else if (UIManagerScript.quit) {
+			UIManagerScript.quit = false;
+			print("Quitting");
+		}
 		if(ball != null) {
-			print("hello");
 			PlayerController ballScript = ball.GetComponent<PlayerController>();
 			if (ballScript.isDead) {
 				// TODO: show player score and ask to quit or continue
@@ -68,7 +77,11 @@ public class GameManager : MonoBehaviour {
 				ballScript.isDead = false;
 				ballScript.collisionCounter = 0;
 				ballScript.hasLaunched = false;
-				SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+				// Enable to UI Canvas
+				if(uiCanvas != null) {
+					canvas = uiCanvas.GetComponent<Canvas>();
+					canvas.enabled = !canvas.enabled;
+				}
 			}
 		}
 		
