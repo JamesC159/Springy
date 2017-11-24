@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Sky
+  - Spring
   layers:
   - Default
   - TransparentFX
