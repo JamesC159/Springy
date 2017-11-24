@@ -1,13 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 	
-	[HideInInspector]
-	public static PlayerController instance;
-	[HideInInspector]
-	public bool isDead = false;
+    [HideInInspector]
+    public bool isDead;
     [HideInInspector]
     public int collisionCounter;
     [HideInInspector]
@@ -18,12 +16,7 @@ public class PlayerController : MonoBehaviour {
 	private Rigidbody2D rb2d;
 
     private void Awake() {
-		if (instance == null) {
-			instance = this;
-			rb2d = GetComponent<Rigidbody2D>();
-		} else {
-			Destroy (this);
-		}
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     // Use this for initialization
@@ -54,9 +47,45 @@ public class PlayerController : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision) {
         collisionCounter++;
 		// If the player collides with the ground, kill the player
-		if (collision.gameObject.tag == "Ground") {
+		if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Sky") {
 			isDead = true;
 		}
+    }
+
+    private void OnMouseDown() {
+        
+    }
+
+    public bool IsDead() {
+        return isDead;
+    }
+
+    public void SetDead(bool dead) {
+        isDead = dead;
+    }
+
+    public int GetCollisionCounter() {
+        return collisionCounter;
+    }
+
+    public void SetCollisionCounter(int count) {
+        collisionCounter = count;
+    }
+
+    public bool HasLaunched() {
+        return hasLaunched;
+    }
+
+    public void SetHasLaunched(bool launched) {
+        hasLaunched = launched;
+    }
+
+    public Vector2 GetVelocity() {
+        return vel;
+    }
+
+    public void SetVelocity(Vector2 velocity) {
+        vel = velocity;
     }
 
     public void MakeDynamic() {
