@@ -12,11 +12,4 @@ public class ScoreBoard : MonoBehaviour {
 }
 
 
-//JS script example
-var scoreBoard: GUIText;
-var score: int;
 
-function Update() {
-    var scoreText: String = "Score: " + score.ToString();
-    scoreBoard.text = scoreText;
-}
