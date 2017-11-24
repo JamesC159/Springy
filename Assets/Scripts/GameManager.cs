@@ -5,9 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-	[HideInInspector]
-	public static GameManager instance;
 	public GameObject column;
+	public GameObject ball;
 	public int numColumns;
 	public float radius = 0f;
 	public float minX;
@@ -27,17 +26,6 @@ public class GameManager : MonoBehaviour {
 	private GameObject[] cols;
 
 	void Awake() {
-		//check if instance already exists
-		if (instance == null) {
-			//if not, set instance to this
-			instance = this;
-		}
-		else if{
-			Destroy (this);
-			DontDestroyOnLoad(this);
-			boardScript = GetComponent<BoardManager>();
-			Start();
-		}
 	}
 
 	// Use this for initialization
@@ -70,15 +58,20 @@ public class GameManager : MonoBehaviour {
 				// If quit, take user back to main menu
 			}
 		}
-		if (PlayerController.instance.isDead) {
-			// TODO: show player score and ask to quit or continue
-			// Player died, restart level with new random columns and reset PlayerController.
-			numInstantiated = 0;
-			PlayerController.instance.isDead = false;
-			PlayerController.instance.collisionCounter = 0;
-			PlayerController.instance.hasLaunched = false;
-			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+		if(ball != null) {
+			print("hello");
+			PlayerController ballScript = ball.GetComponent<PlayerController>();
+			if (ballScript.isDead) {
+				// TODO: show player score and ask to quit or continue
+				// Player died, restart level with new random columns and reset PlayerController.
+				numInstantiated = 0;
+				ballScript.isDead = false;
+				ballScript.collisionCounter = 0;
+				ballScript.hasLaunched = false;
+				SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+			}
 		}
+		
 	}
 
 	void LateUpdate() {

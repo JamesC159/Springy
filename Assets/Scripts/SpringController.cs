@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -54,18 +54,22 @@ public class SpringController : MonoBehaviour {
 					new Vector3 (initialScale.x, cursorPosition.y / 0.25f, initialScale.z), 0.25f);
 			}
 		}
-		if (PlayerController.instance.hasLaunched) {
-			transform.localScale = Vector3.MoveTowards (transform.localScale, initialScale, 1);
-		}
+        if(ballRb != null) {
+            PlayerController p = ballRb.GetComponent<PlayerController>();
+            if (p.hasLaunched) {
+                transform.localScale = Vector3.MoveTowards (transform.localScale, initialScale, 1);
+            }
+        }
 	}
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Player") {
             ballRb = collision.collider.gameObject.GetComponent<Rigidbody2D>();
+            PlayerController p = ballRb.GetComponent<PlayerController>();
             // If the ball has been launched, then we are adding force to the dynamics of the ball rather than setting it's velocity to a precalculated value
             // For some reason on launch, the ball collides with the launch spring twice, so we need to take care of how many times it has collided with the launch spring
             // before deciding that dynamic physics is in play.
-			if (PlayerController.instance.collisionCounter > 1 && PlayerController.instance.hasLaunched) {
+			if (p.collisionCounter > 1 && p.hasLaunched) {
                 x = CalcX(ballRb.mass, p.vel.magnitude);
                 F = transform.up.normalized * k * x * x;
                 ballRb.AddForce(F * forceDampener, ForceMode2D.Impulse);
@@ -92,11 +96,12 @@ public class SpringController : MonoBehaviour {
     private void OnMouseUp() {        
         dragging = false;
         if (ballRb != null) {
+            PlayerController p = ballRb.GetComponent<PlayerController>();
             // If the ball has not been launched when the user lets go of the mouse, then launch the ball kinematically and allow dynamics to take over.
-			if(!PlayerController.instance.hasLaunched) {
+			if(!p.hasLaunched) {
                 ballRb.velocity = CalcVel(x, draggingMass);
                 p.MakeDynamic();
-				PlayerController.instance.hasLaunched = true;
+				p.hasLaunched = true;
             }
         }
     }
