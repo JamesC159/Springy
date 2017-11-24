@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
 	public GameObject column;
 	public GameObject ball;
 	public GameObject uiCanvas;
+	public GameObject UIManager;
 	public int numColumns;
 	public float radius = 0f;
 	public float minX;
@@ -71,17 +72,19 @@ public class GameManager : MonoBehaviour {
 		if(ball != null) {
 			PlayerController ballScript = ball.GetComponent<PlayerController>();
 			if (ballScript.isDead) {
+				// Enable to UI Canvas
+				if(uiCanvas != null && UIManager != null) {
+					UIManagerScript ms = UIManager.GetComponent<UIManagerScript> ();
+					ms.UpdateScore ();
+					canvas = uiCanvas.GetComponent<Canvas>();
+					canvas.enabled = !canvas.enabled;
+				}
 				// TODO: show player score and ask to quit or continue
 				// Player died, restart level with new random columns and reset PlayerController.
 				numInstantiated = 0;
 				ballScript.isDead = false;
 				ballScript.collisionCounter = 0;
 				ballScript.hasLaunched = false;
-				// Enable to UI Canvas
-				if(uiCanvas != null) {
-					canvas = uiCanvas.GetComponent<Canvas>();
-					canvas.enabled = !canvas.enabled;
-				}
 			}
 		}
 		

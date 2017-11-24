@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour {
     public bool hasLaunched;
     [HideInInspector]
     public Vector2 vel;
+	[HideInInspector]
+	public int score;
 
 	private Rigidbody2D rb2d;
 
@@ -22,6 +24,7 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     private void Start () {
         collisionCounter = 0;
+		score = 0;
         hasLaunched = false;
 		isDead = false;
         vel = rb2d.velocity;
@@ -49,6 +52,8 @@ public class PlayerController : MonoBehaviour {
 		// If the player collides with the ground, kill the player
 		if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Sky") {
 			isDead = true;
+		} else if (collision.gameObject.tag == "Spring") {
+			score++;
 		}
     }
 
