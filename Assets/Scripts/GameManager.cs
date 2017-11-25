@@ -58,9 +58,6 @@ public class GameManager : MonoBehaviour {
 			location = new Vector3 (Random.Range (minX, maxX), Random.Range (4, 7), 0);
 			// Calculate the vector from field origin to location for rotation quaternion
 			Vector3 heading = location - fieldOrigin.transform.position;
-			if (heading.x < fieldOrigin.transform.position.x) {
-				// Restrict the magnitude of the distance from the field origin by 1/3
-			}
 			obj = Instantiate (spring, location, rotation);
 			// Randomly choose if we are offsetting the rotation of the spring by angleDelta
 			if((int)Random.Range(0, 10000000000) % 3 == 0) {
