@@ -26,16 +26,19 @@ public class UIManagerScript : MonoBehaviour {
 	}
 	
 	public void Restart() {
+		// Set restart to true and reset the player's score
 		restart = true;
 		playerScript.score = 0;
 	}
 
 	public void Quit() {
+		// Set quit to true and reset the player's score
 		quit = true;
 		playerScript.score = 0;
 	}
 
 	public void UpdateScore() {
+		// Update the player's score
 		score.text = scoreText + playerScript.score;
 	}
 }

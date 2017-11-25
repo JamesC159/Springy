@@ -44,62 +44,65 @@ public class GameManager : MonoBehaviour {
 		GameObject obj = null;
 		Vector3 location = Vector3.zero;
 		Quaternion rotation = Quaternion.identity;
+
+		// Randomly Instantiate columns and springs
 		for(int i = 0; i < numColumns; i++) {
+			// Choose a random location for the column and spring
 			location = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), 0);
 			obj = Instantiate (column, location, rotation);
+			// Activate the coumn and spring
 			obj.SetActive(true);
 		}
 		for (int i = 0; i < numSprings; i++) {
+			// Randomly choose a location for the spring
 			location = new Vector3 (Random.Range (minX, maxX), Random.Range (4, 7), 0);
+			// Calculate the vector from field origin to location for rotation quaternion
 			Vector3 heading = location - fieldOrigin.transform.position;
 			if (heading.x < fieldOrigin.transform.position.x) {
 				// Restrict the magnitude of the distance from the field origin by 1/3
 			}
 			obj = Instantiate (spring, location, rotation);
-			// Find the angle between the field origin's up vector and the proposed spring location
-			print(Vector3.SignedAngle(fieldOrigin.transform.up, heading, Vector3.forward));
-			if((int)Random.Range(0, 1000000000) % 2 == 0) {
-				if((int)Random.Range(0, 1000000000) % 2 == 0) {
+			// Randomly choose if we are offsetting the rotation of the spring by angleDelta
+			if((int)Random.Range(0, 10000000000) % 3 == 0) {
+				// Randomly choose if we are negating the delta
+				if((int)Random.Range(0, 10000000000) % 2 == 0) {
 					delta = angleDelta * -1f;
 				}
 				obj.transform.Rotate(new Vector3(0f, 0, Vector3.SignedAngle(fieldOrigin.transform.up, heading, Vector3.forward) + delta));
 
 			} else {
-				obj.transform.Rotate(new Vector3(0f, 0, Vector3.SignedAngle(fieldOrigin.transform.up, heading, Vector3.forward) + delta));
+				obj.transform.Rotate(new Vector3(0f, 0, Vector3.SignedAngle(fieldOrigin.transform.up, heading, Vector3.forward)));
 			}
+			// Activate the spring
 			obj.SetActive (true);
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-//		if (didWin) {
-//			// Display the player's score and ask to rety or quit
-//			if (restart) {
-//				// If restart, reload the scene
-//			} else if (quit) {
-//				// If quit, take user back to main menu
-//			}
-//		}
+		// Handle UI Interactions
 		if (UIManagerScript.restart) {
+			// Disable the canvas and reload the scene
 			canvas.enabled = !canvas.enabled;
-			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 			UIManagerScript.restart = false;
+			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 		} else if (UIManagerScript.quit) {
-			UIManagerScript.quit = false;
-			print("Quitting");
+			// Quit the game
+			Application.Quit();
 		}
 		if(ball != null) {
 			PlayerController ballScript = ball.GetComponent<PlayerController>();
+			// If the user has died
 			if (ballScript.isDead) {
-				// Enable to UI Canvas
 				if(uiCanvas != null && UIManager != null) {
+					// Update the score UI text
 					UIManagerScript ms = UIManager.GetComponent<UIManagerScript> ();
 					ms.UpdateScore ();
+					// Enable the UI Canvas
 					canvas = uiCanvas.GetComponent<Canvas>();
 					canvas.enabled = !canvas.enabled;
 				}
-				// Player died, restart level with new random columns and reset PlayerController.
+				// Player died, reset PlayerController.
 				numInstantiated = 0;
 				ballScript.isDead = false;
 				ballScript.collisionCounter = 0;

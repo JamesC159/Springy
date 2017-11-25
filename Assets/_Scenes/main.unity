@@ -660,7 +660,7 @@ Prefab:
     - target: {fileID: 114880742710414284, guid: 69ce33548bb6a764188afa9f32b03ceb,
         type: 2}
       propertyPath: angleDelta
-      value: 10
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 69ce33548bb6a764188afa9f32b03ceb, type: 2}
