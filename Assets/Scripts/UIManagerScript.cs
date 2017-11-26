@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class UIManagerScript : MonoBehaviour {
 
-	public GameObject player;
 	public static bool restart;
 	public static bool quit;
+	public GameObject player;
 	public Text score;
 
 	private PlayerController playerScript;

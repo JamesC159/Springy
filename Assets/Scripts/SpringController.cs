@@ -50,14 +50,14 @@ public class SpringController : MonoBehaviour {
             }
 			//compress the spring based on the user's mouse position
 			if (cursorPosition.y / 0.25f > 0.13f && cursorPosition.y / 0.25f < 0.5f) { 
-				transform.localScale = Vector3.MoveTowards (transform.localScale, //new Vector3 (1, 1, initialScale.z),1);
-					new Vector3 (initialScale.x, cursorPosition.y / 0.25f, initialScale.z), 0.25f);
+				transform.localScale = Vector3.Lerp (transform.localScale, //new Vector3 (1, 1, initialScale.z),1);
+					new Vector3 (initialScale.x, cursorPosition.y / 0.25f, initialScale.z), 20 * Time.fixedDeltaTime);
 			}
 		}
         if(ballRb != null) {
             PlayerController p = ballRb.GetComponent<PlayerController>();
             if (p.hasLaunched) {
-                transform.localScale = Vector3.MoveTowards (transform.localScale, initialScale, 1);
+                transform.localScale = Vector3.Lerp (transform.localScale, initialScale, 200 * Time.fixedDeltaTime);
             }
         }
 	}
@@ -78,8 +78,7 @@ public class SpringController : MonoBehaviour {
     }
 
     private void OnMouseDown() {
-        initialPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        initialPos.z = 0;
+        initialPos = springTop.transform.position;
     }
 
     private void OnMouseDrag() {
