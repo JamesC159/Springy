@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour {
     public GameObject player;
     public float smoothing;
 
-    const float MAX_DISTANCE = 30f;
+    const float MAX_DISTANCE = 400f;
 
     Vector3 initialPosition;
     float totalDistanceTraveled;
@@ -25,6 +25,8 @@ public class CameraController : MonoBehaviour {
         }
         if(totalDistanceTraveled > MAX_DISTANCE) {
         	moveGrassAndSky = true;
+        	initialPosition = newPos;
+        	totalDistanceTraveled = 0f;
         }
         this.transform.position = Vector3.Lerp(this.transform.position, newPos, Time.fixedDeltaTime * smoothing);
     }

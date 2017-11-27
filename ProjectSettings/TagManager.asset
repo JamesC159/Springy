@@ -9,6 +9,9 @@ TagManager:
   - Spring
   - Column
   - Grass
+  - FieldOrigin
+  - LaunchSpring
+  - Canvas
   layers:
   - Default
   - TransparentFX

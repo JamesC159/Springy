@@ -6,7 +6,11 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
+	// Singleton Instance
+	public static GameManager instance = null;
+
 	// GameObjects
+	public List<GameObject> prefabHolder;
 	public GameObject column;
 	public GameObject spring;
 	public GameObject ball;
@@ -38,164 +42,125 @@ public class GameManager : MonoBehaviour {
 	public float angleDelta;
 
 	// Object pools
-	List<GameObject> columnPool;
-	List<GameObject> springPool;
-	List<GameObject> skyPool;
-	List<GameObject> grassPool;
+	List<GameObject> columnPool = new List<GameObject>();
+	List<GameObject> springPool = new List<GameObject>();
+	List<GameObject> skyPool = new List<GameObject>();
+	List<GameObject> grassPool = new List<GameObject>();
 
 	void Awake() {
+		// Abide by the Singleton pattern
+		if(instance == null) {
+			instance = this;
+		} else if(instance != this) {
+			Destroy(this.gameObject);
+			return;
+		}
+		// Make sure the GameManager doesnt get destroyed between scenes.
+		DontDestroyOnLoad(this.gameObject);
 		// Initialize object pools
-		columnPool = new List<GameObject>();
-		springPool = new List<GameObject>();
-		skyPool = new List<GameObject>();
-		grassPool = new List<GameObject>();
 		InitObjectPool(columnPool, columnPoolSize);
 		InitObjectPool(springPool, springPoolSize);
 		InitObjectPool(skyPool, skyPoolSize);
 		InitObjectPool(grassPool, grassPoolSize);
 	}
 
+	void RandomizeFieldOrigin(){
+		// Randomize field origin point
+		Vector3 location = new Vector3(Random.Range(10f, 20f),
+									0f,
+									0f);
+		fieldOrigin.transform.position = location;
+	}
 
 	// Use this for initialization
 	void Start () {
-		// Instantiate the background
-		InstantiateBackground(skyTile, skyPool, skyPoolSize);
-		InstantiateBackground(grassTile, grassPool, grassPoolSize);
-		// Randomly Instantiate columns and springs
-		InstantiateColumns();
-		// Randomly Instantiate springs in the sky
-		InstantiateSprings();
-		// Activate the launch spring and ball 
+		// Add prefabs to the prefab holder
+		prefabHolder.Add(column);
+		prefabHolder.Add(spring);
+		prefabHolder.Add(grassTile);
+		prefabHolder.Add(skyTile);
+		// Activate launch setup and field origin
+		UpdateObjectActiveStatus(fieldOrigin);
 		UpdateObjectActiveStatus(launchSpring);
 		UpdateObjectActiveStatus(ball);
+		// Randomize the location of the field origin
+		RandomizeFieldOrigin();
+		// Instantiate the rest of the prefabs in the world
+		InstantiatePrefabs();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		// Handle UI Interactions
-		if (UIManagerScript.restart) {
-			StartCoroutine(Restart());// Disable the canvas and reload the scene
-		} else if (UIManagerScript.quit) {
-			// Quit the game
+		// Handle restarting the scene
+		if(UIManagerScript.instance.restart) {
+			UIManagerScript.instance.restart = false;
+			PlayerController.score = 0;
+			// Clear object pools
+			ClearPool(skyPool, skyPoolSize);
+			ClearPool(grassPool, grassPoolSize);
+			ClearPool(springPool, springPoolSize);
+			ClearPool(columnPool, columnPoolSize);
+			// Disable the UI Canvas
+			UIManagerScript.instance.DisableCanvas();
+			// Reload the scene
+			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+		} else if (UIManagerScript.instance.quit) {
+			// Handle quitting the game
+			UIManagerScript.instance.quit = false;
+			PlayerController.score = 0;
 			Application.Quit();
 		}
 
 		// Handle live game state
 		if(ball != null) {
-			PlayerController ballScript = ball.GetComponent<PlayerController>();
 			// If the user has died
-			if (ballScript.isDead) {
-				if(UICanvas != null && UIManager != null) {
-					// Update the player's score
-					UpdatePlayerScore(UIManager.GetComponent<UIManagerScript>());
-					// Enable the UI Canvas
-					UpdateCanvas(UICanvas.GetComponent<Canvas>());
-				}
+			if (PlayerController.isDead) {
+				// Update player's score and enable the UI to restart or quit
+				UIManagerScript.instance.UpdateScore();
+				UIManagerScript.instance.EnableCanvas();
 				// Player died, reset PlayerController.
-				ballScript.isDead = false;
-				ballScript.collisionCounter = 0;
-				ballScript.hasLaunched = false;
+				PlayerController.isDead = false;
+				PlayerController.collisionCounter = 0;
+				PlayerController.hasLaunched = false;
 			}
 		}
 
 		// Cycle grass and sky positions to keep seemless background
 		if(CameraController.moveGrassAndSky) {
 			// CycleObjectPositions(grassPool);
-			CycleObjectPositions(skyPool);
+			// CycleObjectPositions(skyPool);
 			CycleObjectPositions(grassPool);
 			CameraController.moveGrassAndSky = false;
 		}
 	}
 
-	void InitObjectPool(List<GameObject> pool, int poolSize) {
-		GameObject dummy = null;
-		for(int i = 0; i < poolSize; i++) {
-			pool.Add(dummy);
-		}
-	}
+	/////////////////////////////////////
+	// GameObject Instiation Methods.  //
+	/////////////////////////////////////
 
-	void CycleObjectPositions(List<GameObject> pool) {
-		GameObject firstObj = pool[0];
-		GameObject lastObj = pool[pool.Count - 1];
-		Vector2 size = firstObj.GetComponent<BoxCollider2D>().size;
-		size.x /= 2f;
-		size.y = 0f;
-		Vector3 size3 = new Vector3(size.x, size.y, 0f);
-		firstObj.transform.position = lastObj.transform.position + size3;
-		pool.Add(firstObj);
-		pool.RemoveAt(0);
-	}
-
-	bool CoinFlip() {
-		// Simulate randomness
-		int counter = 0;
-		for(int i = 1; i <= 15; i++) {
-			if((int)Random.Range(0, 10000000000) % i == 0) {
-				counter++;
+	void InstantiatePrefabs() {
+		if(prefabHolder != null) {
+			// Instantiate each type of GameObject in the prefabs holder.
+			foreach(GameObject child in prefabHolder) {
+				switch(child.gameObject.tag) {
+					case "Spring":
+						InstantiateSprings();
+						break;
+					case "Column":
+						InstantiateColumns();
+						break;
+					case "Grass":
+						InstantiateBackground(grassTile, grassPool, grassPoolSize);
+						break;
+					case "Sky":
+						InstantiateBackground(skyTile, skyPool, skyPoolSize);
+						break;
+				}
 			}
-		}
-		// Make sure we aren't simply dividing 0
-		if(counter != 0) {
-			return (counter % 3 == 0) ? true : false;
 		} else {
-			return (Random.Range(0, 10000000000) % 9 == 0) ? true : false;
-		}
-	}
-
-	bool CheckOverlap(GameObject obj, List<GameObject> objects) {
-		// For each object being compared to the target object:
-		if(obj != null && objects != null) {
-			foreach(GameObject o in objects) {
-				if(o != null) {
-					// Get the distance between the objects
-					float d = Vector3.Distance(o.transform.position, obj.transform.position);
-					// Check if column or spring is overlapping with any objects
-					if(obj.tag == "Column" 
-						&& d < minColSeparation) {
-						return true;
-					} else if (obj.tag == "Spring" 
-						&& d < minSpringSeparation) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-		return false;
-	}
-
-	IEnumerator RotateSkySpring(GameObject skySpring, 
-						GameObject worldOrigin, 
-						Vector3 position, 
-						float rotOffset) {
-		// Rotate the sky spring by the angle between the origin of the world
-		// and the position of the sky spring, with a chance of an offset angle
-		// added to the rotation
-		if(skySpring && worldOrigin) {
-			skySpring.transform.Rotate(
-				new Vector3(0f, 
-							0f, 
-							Vector3.SignedAngle(
-									worldOrigin.transform.up, 
-									position, 
-									Vector3.forward) 
-							+ rotOffset));
-		}
-
-		yield return null;
-	}
-
-	void UpdateObjectActiveStatus(GameObject obj) {
-		if(obj != null) {
-			obj.SetActive(!obj.activeSelf);
-			// Activate children a column
-			if(obj.tag == "Column") {
-				foreach(Transform child 
-					in obj.transform.GetComponentsInChildren<Transform>()) {
-					child.gameObject.SetActive(true);
-				}
-			}
+			throw new System.NullReferenceException("[-] GameManager::InstantiatePrefabs : " 
+												+ "Failed instantiating prefabs because prefabHolder was null");
 		}
 	}
 
@@ -218,8 +183,6 @@ public class GameManager : MonoBehaviour {
 				// If this object overlaps with any other objects, destroy the new object
 				if(CheckOverlap(obj, columnPool)) {
 					Destroy(obj);
-					// Decrement i to try again
-					i--;
 				} else {
 					// Add the column to the column pool
 					columnPool[i] = obj;
@@ -253,8 +216,6 @@ public class GameManager : MonoBehaviour {
 				if(CheckOverlap(obj, springPool)) {
 					// If so, destroy the new spring
 					Destroy(obj);
-					// Decrement i to try again
-					i--;
 				} else {
 					// Randomly choose if we are offsetting the rotation of the spring by angleDelta
 					StartCoroutine(RotateSkySpring(obj, 
@@ -300,8 +261,151 @@ public class GameManager : MonoBehaviour {
 				// Activate the new sky tile
 				pool[i].SetActive(true);
 			}
-
 			ParentGameObjects(pool);
+		}
+	}
+
+	////////////////////////////////
+	// Object Pool Methods        //
+	////////////////////////////////
+
+	void InitObjectPool(List<GameObject> pool, int poolSize) {
+		GameObject dummy = null;
+		for(int i = 0; i < poolSize; i++) {
+			pool.Add(dummy);
+		}
+	}
+
+	void ClearPool(List<GameObject> pool, int poolSize) {
+		for(int i = 0; i < poolSize; i++) {
+			Destroy(pool[i]);
+		}
+	}
+
+	void CycleObjectPositions(List<GameObject> pool) {
+		GameObject firstObj = null;
+		GameObject lastObj = null;
+		int idxFirst = -1;
+		int idxLast = -1;
+
+		// If there is more than one object in the pool, 
+		// then firstObj and lastObj cannot be the same
+		if(pool.Count >= 2) {
+			// Look for the first non-null object in the pool
+			for(int i = 0; i < pool.Count - 1; i++) {
+				if(pool[i]) {
+					firstObj = pool[i];
+					idxFirst = i;
+					break;
+				}
+			}
+			// Look for the last non-null object in the pool
+			for(int i = pool.Count - 1; i > 0; i--) {
+				if(pool[i]) {
+					lastObj = pool[i];
+					idxLast = i;
+					break;
+				}
+			}
+		} else if(pool.Count == 1) {
+			// pool.Count < 1 so set firstObj and lastObj 
+			// to be equal to the first object in the pool.
+			firstObj = lastObj = pool[0];
+		} else {
+			// There are no GameObjects in the pool.
+			print("[-] CycleObjectPositions() : No objects in the pool to cycle through");
+		}
+		if(firstObj && lastObj) {
+			// Get the width and height of the objects in the pool
+			Vector2 size = firstObj.GetComponent<SpriteRenderer>().bounds.size;
+			Vector3 size3 = new Vector3(size.x, 0f, 0f);
+			// Place the first object in the pool to the right of the last object
+			firstObj.transform.position = lastObj.transform.position + size3;
+			// If lastObj = firstObj, then do not remove it from the pool.
+			if(idxFirst > -1 && idxLast > -1) {
+				if(idxFirst == idxLast) {
+					return;
+				} else if(idxLast < pool.Count - 1) {
+					// If the last non-null object is not the last in the pool,
+					// Insert the first non-null object to the next element after the last.
+					pool.Insert(idxLast + 1, firstObj);
+				} else if(idxLast == pool.Count - 1) {
+					// If the last non-null object is the last object in the pool,
+					// add the firstObject to the end of the pool as a new element.
+					pool.Add(firstObj);
+				} 
+			}
+			pool.Remove(firstObj);
+		}
+	}
+
+	bool CoinFlip() {
+		// Simulate randomness
+		int counter = 0;
+		for(int i = 1; i <= 15; i++) {
+			if((int)Random.Range(0, 10000000000) % i == 0) {
+				counter++;
+			}
+		}
+		// Make sure we aren't simply dividing 0
+		if(counter != 0) {
+			return (counter % 3 == 0) ? true : false;
+		} else {
+			return (Random.Range(0, 10000000000) % 9 == 0) ? true : false;
+		}
+	}
+
+	bool CheckOverlap(GameObject obj, List<GameObject> objects) {
+		if(obj != null && objects != null) {
+			foreach(GameObject o in objects) {
+				if(o != null) {
+					// Get the distance between the objects
+					float d = Vector3.Distance(o.transform.position, obj.transform.position);
+					// Check if column or spring is overlapping with any objects
+					if(obj.tag == "Column" 
+						&& d < minColSeparation) {
+						return true;
+					} else if (obj.tag == "Spring" 
+						&& d < minSpringSeparation) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	IEnumerator RotateSkySpring(GameObject skySpring, 
+						GameObject worldOrigin, 
+						Vector3 position, 
+						float rotOffset) {
+		// Rotate the sky spring by the angle between the origin of the world
+		// and the position of the sky spring, with a chance of an offset angle
+		// added to the rotation
+		if(skySpring && worldOrigin) {
+			skySpring.transform.Rotate(
+				new Vector3(0f, 
+							0f, 
+							Vector3.SignedAngle(
+									worldOrigin.transform.up, 
+									position, 
+									Vector3.forward) 
+							+ rotOffset));
+		}
+
+		yield return null;
+	}
+
+	void UpdateObjectActiveStatus(GameObject obj) {
+		if(obj != null) {
+			obj.SetActive(!obj.activeSelf);
+			// Activate children a column
+			if(obj.tag == "Column") {
+				foreach(Transform child 
+					in obj.transform) {
+					child.gameObject.SetActive(true);
+				}
+			}
 		}
 	}
 
@@ -309,34 +413,29 @@ public class GameManager : MonoBehaviour {
 		GameObject dummy = new GameObject();
 		// Set each object's name in the pool to it's tag
 		foreach(GameObject o in pool) {
-			o.transform.SetParent(dummy.transform);
-			o.name = o.tag;
+			if(o != null) {
+				o.transform.SetParent(dummy.transform);
+				o.name = o.tag;
+			}
 		}
 		if(pool[0] != null) {
 			// If the pool contains sky tiles, add a box collider to the parent
 			if(pool[0].tag == "Sky") {
+				dummy.tag = "Sky";
 				dummy.AddComponent<BoxCollider2D>();
 				dummy.GetComponent<BoxCollider2D>().offset = new Vector2(0f, 56f);
 				dummy.GetComponent<BoxCollider2D>().size = new Vector2(500f, 0.5f);
 			} else if(pool[0].tag == "Grass") {
+				dummy.tag = "Ground";
 				dummy.AddComponent<BoxCollider2D>();
-				// dummy.GetComponent<BoxCollider2D>().offset = new Vector2(0f, 56f);
-				// dummy.GetComponent<BoxCollider2D>().size = new Vector2(500f, 0.5f);
+				dummy.GetComponent<BoxCollider2D>().offset = new Vector2(0f, -5f);
+				dummy.GetComponent<BoxCollider2D>().size = new Vector2(500f, 3.7f);
 			}
 		}
 		dummy.name = pool[0].name + "Holder";
 		dummy.SetActive(true);
 	}
 
-	void UpdatePlayerScore(UIManagerScript script) {
-		// Update the player's final score
-		script.UpdateScore();
-	}
-
-	void UpdateCanvas(Canvas canvas) {
-		// Toggle canvas visibilty
-		canvas.enabled = !canvas.enabled;
-	}
 
 	//////////////////////////
 	// CoRoutines			//
@@ -362,14 +461,5 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		yield return null;
-	}
-
-	IEnumerator Restart() {
-		UIManagerScript.restart = false;
-		// Enable the UI Canvas
-		UpdateCanvas(UICanvas.GetComponent<Canvas>());
-		// Reload the scene
-		SceneManager.LoadScene (SceneManager.GetActiveScene().name);
-		yield return new WaitForSeconds(1f);
 	}
 }

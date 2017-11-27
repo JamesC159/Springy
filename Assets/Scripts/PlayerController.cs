@@ -5,24 +5,24 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 	
     [HideInInspector]
-    public bool isDead;
+    public static bool isDead;
     [HideInInspector]
-    public int collisionCounter;
+    public static int collisionCounter;
     [HideInInspector]
-    public bool hasLaunched;
+    public static bool hasLaunched;
     [HideInInspector]
     public Vector2 vel;
 	[HideInInspector]
-	public int score;
+	public static int score;
 
-	private Rigidbody2D rb2d;
+	Rigidbody2D rb2d;
 
-    private void Awake() {
+    void Awake() {
         rb2d = GetComponent<Rigidbody2D>();
     }
 
     // Use this for initialization
-    private void Start () {
+    void Start () {
         collisionCounter = 0;
 		score = 0;
         hasLaunched = false;
@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     // Update is called once per frame
-    private void Update () {
+    void Update () {
         if (rb2d.velocity.sqrMagnitude > 0) {
             vel = rb2d.velocity;
         }
@@ -55,52 +55,5 @@ public class PlayerController : MonoBehaviour {
 		} else if (collision.gameObject.tag == "Spring") {
 			score++;
 		}
-    }
-
-    private void OnMouseDown() {
-        
-    }
-
-    public bool IsDead() {
-        return isDead;
-    }
-
-    public void SetDead(bool dead) {
-        isDead = dead;
-    }
-
-    public int GetCollisionCounter() {
-        return collisionCounter;
-    }
-
-    public void SetCollisionCounter(int count) {
-        collisionCounter = count;
-    }
-
-    public bool HasLaunched() {
-        return hasLaunched;
-    }
-
-    public void SetHasLaunched(bool launched) {
-        hasLaunched = launched;
-    }
-
-    public Vector2 GetVelocity() {
-        return vel;
-    }
-
-    public void SetVelocity(Vector2 velocity) {
-        vel = velocity;
-    }
-
-    public void MakeDynamic() {
-        if (rb2d != null) {
-            if (rb2d.isKinematic) {
-                rb2d.isKinematic = false;
-            }
-            if (rb2d.freezeRotation) {
-                rb2d.freezeRotation = false;
-            } 
-        }
     }
 }

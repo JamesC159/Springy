@@ -56,7 +56,7 @@ public class SpringController : MonoBehaviour {
 		}
         if(ballRb != null) {
             PlayerController p = ballRb.GetComponent<PlayerController>();
-            if (p.hasLaunched) {
+            if (PlayerController.hasLaunched) {
                 transform.localScale = Vector3.Lerp (transform.localScale, initialScale, 200 * Time.fixedDeltaTime);
             }
         }
@@ -69,7 +69,7 @@ public class SpringController : MonoBehaviour {
             // If the ball has been launched, then we are adding force to the dynamics of the ball rather than setting it's velocity to a precalculated value
             // For some reason on launch, the ball collides with the launch spring twice, so we need to take care of how many times it has collided with the launch spring
             // before deciding that dynamic physics is in play.
-			if (p.collisionCounter > 1 && p.hasLaunched) {
+			if (PlayerController.collisionCounter > 1 && PlayerController.hasLaunched) {
                 x = CalcX(ballRb.mass, p.vel.magnitude);
                 F = transform.up.normalized * k * x * x;
                 ballRb.AddForce(F * forceDampener, ForceMode2D.Impulse);
@@ -97,17 +97,21 @@ public class SpringController : MonoBehaviour {
         if (ballRb != null) {
             PlayerController p = ballRb.GetComponent<PlayerController>();
             // If the ball has not been launched when the user lets go of the mouse, then launch the ball kinematically and allow dynamics to take over.
-			if(!p.hasLaunched) {
+			if(!PlayerController.hasLaunched) {
                 ballRb.velocity = CalcVel(x, draggingMass);
-                p.MakeDynamic();
-				p.hasLaunched = true;
+                if (ballRb.isKinematic) {
+                    ballRb.isKinematic = false;
+                }
+                if (ballRb.freezeRotation) {
+                    ballRb.freezeRotation = false;
+                } 
+				PlayerController.hasLaunched = true;
             }
         }
     }
 
 
     // Conservation of Energy equations
-
     private float CalcX(float mass, float vel) {
         return Mathf.Sqrt(mass * (vel * vel) / k);
     }

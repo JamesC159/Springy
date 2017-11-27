@@ -2,43 +2,64 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManagerScript : MonoBehaviour {
 
-	public static bool restart;
-	public static bool quit;
+	public static UIManagerScript instance;
+	[HideInInspector]
+	public bool restart;
+	[HideInInspector]
+	public GameObject UICanvas;
+	public bool quit;
 	public GameObject player;
 	public Text score;
-
-	private PlayerController playerScript;
-	private string scoreText;
+	
+	Canvas canvas;
+	string scoreText;
 
 	void Awake() {
-		playerScript = player.GetComponent<PlayerController> ();
+		if(instance == null) {
+			instance = this;
+		} else if(instance != this) {
+			Destroy(this.gameObject);
+		}
+		DontDestroyOnLoad(this.gameObject);
 	}
 
 	// Use this for initialization
 	void Start () {
+		canvas = UICanvas.GetComponent<Canvas>();
 		scoreText = "Score: ";
 	}
 
 	void Update() {
 	}
 	
-	public void Restart() {
+	void Restart() {
 		// Set restart to true and reset the player's score
 		restart = true;
-		playerScript.score = 0;
 	}
 
-	public void Quit() {
+	void Quit() {
 		// Set quit to true and reset the player's score
 		quit = true;
-		playerScript.score = 0;
 	}
 
 	public void UpdateScore() {
 		// Update the player's score
-		score.text = scoreText + playerScript.score;
+		score.text = "Score: " + PlayerController.score;
+	}
+
+	public void EnableCanvas() {
+		if(canvas != null) {
+			canvas.GetComponent<Canvas>().enabled = true;
+		}
+	}
+
+	public void DisableCanvas() {
+		if(canvas != null) {
+			canvas.GetComponent<Canvas>().enabled = false;
+		}
 	}
 }

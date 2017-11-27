@@ -51,5 +51,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd4d38edb86a64762a9ae95be545e0e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  column: {fileID: 0}
-  numColumns: 5
+  column: {fileID: 1816687573309634, guid: df38aa320e40826419ac2f227f3d2cc8, type: 2}
+  spring: {fileID: 1286203202090458, guid: df38aa320e40826419ac2f227f3d2cc8, type: 2}
+  ball: {fileID: 1576133260986242, guid: 14dec63f1c14d634b900cb09d38cb694, type: 2}
+  launchSpring: {fileID: 1642924658484474, guid: 4d4b9a26531aa49d7960e52f8905c50d,
+    type: 2}
+  skyTile: {fileID: 1069024294473328, guid: 3136cb0a0d7c6467aa6c9dee041a319f, type: 2}
+  grassTile: {fileID: 1317204872731864, guid: 8c9d5be71e3094e5ca1ead2b33394606, type: 2}
+  UICanvas: {fileID: 1962581411884288, guid: 039dd80730521457ba753f47b5ddfdfe, type: 2}
+  UIManager: {fileID: 1013571596117826, guid: 3c8d2b3c5a5e3463a9aafce98a5d6069, type: 2}
+  fieldOrigin: {fileID: 1068660753714914, guid: 0f76e645465144ada98ca05ab5e0c321,
+    type: 2}
+  columnPoolSize: 15
+  springPoolSize: 8
+  skyPoolSize: 5
+  grassPoolSize: 8
+  radius: 5
+  minColSeparation: 1.5
+  minSpringSeparation: 2
+  minColX: 0
+  minSpringX: 0
+  minColY: -5
+  minSpringY: 5
+  maxColX: 25
+  maxSpringX: 27
+  maxColY: -4
+  maxSpringY: 8
+  angleDelta: 25
