@@ -111,11 +111,10 @@ public class GameManager : MonoBehaviour {
 			PlayerController.score = 0;
 			Application.Quit();
 		}
-
-		// Handle live game state
-		if(ball != null) {
+			
 			// If the user has died
 			if (PlayerController.isDead) {
+			print ("DEAD");
 				// Update player's score and enable the UI to restart or quit
 				UIManagerScript.instance.UpdateScore();
 				UIManagerScript.instance.EnableCanvas();
@@ -124,7 +123,6 @@ public class GameManager : MonoBehaviour {
 				PlayerController.collisionCounter = 0;
 				PlayerController.hasLaunched = false;
 			}
-		}
 
 		// Cycle grass and sky positions to keep seemless background
 		if(CameraController.moveGrassAndSky) {

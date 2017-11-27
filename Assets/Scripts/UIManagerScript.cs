@@ -8,13 +8,12 @@ public class UIManagerScript : MonoBehaviour {
 
 	public static UIManagerScript instance;
 	[HideInInspector]
-	public bool restart;
-	[HideInInspector]
+	public bool restart = false;
 	public GameObject UICanvas;
-	public bool quit;
+	public bool quit = false;
 	public GameObject player;
 	public Text score;
-	
+
 	Canvas canvas;
 	string scoreText;
 
@@ -34,14 +33,15 @@ public class UIManagerScript : MonoBehaviour {
 	}
 
 	void Update() {
+		 
 	}
 	
-	void Restart() {
+	public void Restart() {
 		// Set restart to true and reset the player's score
 		restart = true;
 	}
 
-	void Quit() {
+	public void Quit() {
 		// Set quit to true and reset the player's score
 		quit = true;
 	}
@@ -53,13 +53,13 @@ public class UIManagerScript : MonoBehaviour {
 
 	public void EnableCanvas() {
 		if(canvas != null) {
-			canvas.GetComponent<Canvas>().enabled = true;
+			canvas.enabled = true;
 		}
 	}
 
 	public void DisableCanvas() {
 		if(canvas != null) {
-			canvas.GetComponent<Canvas>().enabled = false;
+			canvas.enabled = false;
 		}
 	}
 }
