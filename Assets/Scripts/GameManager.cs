@@ -78,12 +78,15 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		// Handle UI Interactions
+        if (Input.GetKey ("escape")) { 
+            SceneManager.LoadScene (0);
+        }
         if (Input.GetKeyDown("r") || UIManagerScript.restart) {
 			// Disable the canvas and reload the scene
 			canvas.enabled = !canvas.enabled;
 			UIManagerScript.restart = false;
 			SceneManager.LoadScene (SceneManager.GetActiveScene().name);
-        } else if (Input.GetKey("escape") || UIManagerScript.quit) {
+        } else if (UIManagerScript.quit) {
 			// Quit the game
 			Application.Quit();
 		}
