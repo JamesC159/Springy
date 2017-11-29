@@ -57,6 +57,11 @@ public class SpringController : MonoBehaviour {
         if(ballRb != null) {
             PlayerController p = ballRb.GetComponent<PlayerController>();
             if (p.hasLaunched) {
+                if (ballRb.velocity.magnitude > 15) { 
+                    // if the ball is going too fast gradually slow it down
+                    // putting it at .93 instead of .99 gives it more of a whiffle / beach ball feel
+                    ballRb.velocity *= 0.93f;
+                }
                 transform.localScale = Vector3.MoveTowards (transform.localScale, initialScale, 1);
             }
         }
@@ -100,6 +105,13 @@ public class SpringController : MonoBehaviour {
             // If the ball has not been launched when the user lets go of the mouse, then launch the ball kinematically and allow dynamics to take over.
 			if(!p.hasLaunched) {
                 ballRb.velocity = CalcVel(x, draggingMass);
+                // Cap the max initial speed of the ball so it won't fly off the screen
+                // This is a weird way of doing this, but directly editing ballRb.velocity.x/y won't work for whatever reason
+                Vector3 velocityLimit = ballRb.velocity;
+                velocityLimit.x = Mathf.Clamp (velocityLimit.x, 5, 30);
+                velocityLimit.y = Mathf.Clamp (velocityLimit.y, 0, 15);
+                ballRb.velocity = velocityLimit;
+
                 p.MakeDynamic();
 				p.hasLaunched = true;
             }
@@ -120,3 +132,4 @@ public class SpringController : MonoBehaviour {
 
 //https://www.rastating.com/adding-springs-to-2d-platformers-in-unity/
 //https://unity3d.com/learn/tutorials/topics/scripting/update-and-fixedupdate
+
