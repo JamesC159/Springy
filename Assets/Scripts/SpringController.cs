@@ -50,14 +50,14 @@ public class SpringController : MonoBehaviour {
             }
 			//compress the spring based on the user's mouse position
 			if (cursorPosition.y / 0.25f > 0.13f && cursorPosition.y / 0.25f < 0.5f) { 
-				transform.localScale = Vector3.MoveTowards (transform.localScale, //new Vector3 (1, 1, initialScale.z),1);
-					new Vector3 (initialScale.x, cursorPosition.y / 0.25f, initialScale.z), 0.25f);
+				transform.localScale = Vector3.MoveTowards (transform.localScale,
+					               new Vector3 (initialScale.x, cursorPosition.y / 0.25f, initialScale.z), 0.25f);
 			}
 		}
         if(ballRb != null) {
             PlayerController p = ballRb.GetComponent<PlayerController>();
             if (p.hasLaunched) {
-                if (ballRb.velocity.magnitude > 15) { 
+                if (ballRb.velocity.magnitude > 30) { 
                     // if the ball is going too fast gradually slow it down
                     // putting it at .93 instead of .99 gives it more of a whiffle / beach ball feel
                     ballRb.velocity *= 0.93f;
@@ -108,8 +108,8 @@ public class SpringController : MonoBehaviour {
                 // Cap the max initial speed of the ball so it won't fly off the screen
                 // This is a weird way of doing this, but directly editing ballRb.velocity.x/y won't work for whatever reason
                 Vector3 velocityLimit = ballRb.velocity;
-                velocityLimit.x = Mathf.Clamp (velocityLimit.x, 5, 30);
-                velocityLimit.y = Mathf.Clamp (velocityLimit.y, 0, 15);
+                velocityLimit.x = Mathf.Clamp (velocityLimit.x, 0, 30);
+                velocityLimit.y = Mathf.Clamp (velocityLimit.y, 0, 20);
                 ballRb.velocity = velocityLimit;
 
                 p.MakeDynamic();
